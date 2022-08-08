@@ -1,14 +1,14 @@
 <template>
-  <mainPage />
+  <router-view></router-view>
 </template>
 
 <script>
-import mainPage from './components/mainPage.vue'
+import './assets/css/base.css'
+import { useRoute, useRouter } from 'vue-router'
 export default {
   name: 'App',
-  components: {
-    mainPage
-  }
+  useRoute: useRoute,
+  useRouter: useRouter
 }
 </script>
 
