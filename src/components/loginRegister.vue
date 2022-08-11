@@ -22,43 +22,158 @@ export default {
     data() {
         return {
             isRememberPassword: false,
-            colorList: ["#7EC1C0", "#e4d3a8", "#e28147", "#c64d4d", "#90dcce", "#a3d6ad", "#cd4c38", "#0cc8eb", "#e151b7"]
+            colorList: ["#7EC1C0", "#e4d3a8", "#e28147", "#c64d4d", "#90dcce", "#a3d6ad", "#cd4c38", "#0cc8eb", "#e151b7"],
+            canvas: null,
+            ctx: null
         };
     },
     created() {
     },
     mounted() {
-        this.initCanvas()
+        this.stars()
     },
     methods: {
         rememberPassword() {
             this.isRememberPassword = !this.isRememberPassword
         },
-        initCanvas() {
-            var canvas = document.getElementById('myCanvas');//引用canvas元素
-            var ctx = canvas.getContext('2d');//获取2D环境
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;//使canvas画布的大小为整个屏幕的大小
-            this.initStars(ctx, canvas)
-            setInterval(this.drawUpdate(ctx, canvas), 100)
-        },
-        initStars(ctx, canvas) {
-            for (let i = 0; i < 200; i++) {
-                ctx.beginPath();//开始绘制
-                let x = (Math.random() * (canvas.width - 5)) + 5
-                let y = (Math.random() * (canvas.height - 5)) + 5
-                let color = this.colorList[parseInt((Math.random() * (this.colorList.length - 0)) + 0)]
-                ctx.arc(x, y, 2, 0, 2 * Math.PI);
-                ctx.fillStyle = color;
-                ctx.strokeStyle = color;
-                ctx.fill()
-                ctx.stroke();
-                ctx.closePath();
+        stars() {
+            var canvas = document.getElementById("myCanvas");
+            var ctx = canvas.getContext("2d");
+            // var showBar = document.querySelector("#show");
+            // var showWord = "";
+            var devicePixelRatio = window.devicePixelRatio || 1;
+            var backingStoreRatio = ctx.webkitBackingStorePixelRatio ||
+                ctx.mozBackingStorePixelRatio ||
+                ctx.msBackingStorePixelRatio ||
+                ctx.oBackingStorePixelRatio ||
+                ctx.backingStorePixelRatio || 1;
+            var ratio = devicePixelRatio / backingStoreRatio;
+            var screenWidth = canvas.width = window.innerWidth * ratio;
+            var screenHeight = canvas.height = window.innerHeight * ratio;
+            var centerPointX = screenWidth / 2;
+            var centerPointY = screenHeight / 2;
+            canvas.style.width = canvas.width / ratio + "px";
+            canvas.style.height = canvas.height / ratio + "px";
+            var lines = [];
+            var beta = 0;
+            var gamma = 0;
+            var mousex = 0;
+            var mousey = 0;
+            var betaArr = [];
+            var gammaArr = [];
+            // var alpha = 0;
+            //----------------------------
+            //监听陀螺仪
+            // if (window.DeviceOrientationEvent) {
+            //     window.addEventListener('deviceorientation', (e) => {
+            //         // alpha = e.alpha;
+            //         beta = e.beta;
+            //         gamma = e.gamma;
+            //     });
+            // }
+            //----------------
+            //监听鼠标位置
+            // function mousePosition(ev) {
+            //     if (ev.pageX || ev.pageY) {
+            //         return {
+            //             x: ev.pageX,
+            //             y: ev.pageY
+            //         };
+            //     }
+            //     return {
+            //         x: ev.clientX + document.body.scrollLeft - document.body.clientLeft,
+            //         y: ev.clientY + document.body.scrollTop - document.body.clientTop
+            //     };
+            // }
+
+            // function mouseMove(e) {
+            //     e = e || window.event;
+            //     var mousePos = mousePosition(e);
+            //     mousex = mousePos.x;
+            //     mousey = mousePos.y;
+            // }
+            // document.onmousemove = mouseMove;
+            var startLines = /** @class */ (function () {
+                function startLines() {
+                    this.positionx = -200;
+                    this.positiony = 0;
+                    this.r = Math.floor(Math.random() * (Math.sqrt(screenHeight * screenHeight + screenWidth * screenWidth) - 400)) + 400;
+                    this.startRadio = -(Math.random() * Math.PI / 8 + Math.PI / 8);
+                    this.endRadio = 0;
+                    this.red = Math.floor(Math.random() * 155) + 100;
+                    this.green = Math.floor(Math.random() * 155) + 100;
+                    this.blue = Math.floor(Math.random() * 155) + 100;
+                    //opacity:number=Math.floor(Math.random()*10)/10;
+                    this.opacity = 1;
+                    this.lineWidth = Math.floor(Math.random() * 6) + 2;
+                    this.speed = (Math.random() * Math.PI + Math.PI) / this.r;
+                }
+                startLines.prototype.drawStart = function () {
+                    var color = "rgba(" + this.red + "," + this.green + "," + this.blue + "," + this.opacity + ")";
+                    ctx.beginPath();
+                    ctx.lineWidth = this.lineWidth;
+                    ctx.arc(this.positionx, this.positiony, this.r, this.startRadio, this.endRadio);
+                    ctx.strokeStyle = color;
+                    ctx.stroke();
+                };
+                startLines.prototype.animate = function () {
+                    if (gamma || beta) {
+                        this.positionx = -beta * 2;
+                        this.positiony = -gamma * 2;
+                    } else if (mousex || mousey) {
+                        this.positionx = (centerPointX - mousex) * 0.2;
+                        this.positiony = (centerPointY - mousey) * 0.2;
+                    }
+                    this.startRadio += this.speed;
+                    this.endRadio += this.speed;
+                    this.drawStart();
+                };
+                return startLines;
+            }());
+
+            function recovery(arr, index) {
+                var tempArr = [];
+                for (var i = 0; i < arr.length; i++) {
+                    if (i != index) {
+                        tempArr.push(arr[i]);
+                    }
+                }
+                return tempArr;
             }
-        },
-        drawUpdate(ctx, canvas) {
-            ctx.clearRect(0, 0, canvas.width, canvas.height)
-            this.initStars(ctx, canvas)
+            setInterval(function () {
+                var starLine = new startLines();
+                lines.push(starLine);
+                starLine.drawStart();
+                for (var i = 0; i < lines.length; i++) {
+                    if (lines[i].startRadio > Math.PI * 3 / 4) {
+                        lines = recovery(lines, i);
+                    }
+                }
+                if (lines.length > 60) {
+                    lines.shift();
+                }
+            }, 200);
+            setInterval(function () {
+                betaArr.push(beta);
+                gammaArr.push(gamma);
+                if (betaArr.length > 30) {
+                    betaArr.shift();
+                    gammaArr.shift();
+                }
+                ctx.clearRect(0, 0, screenWidth, screenHeight);
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.lineTo(0, screenHeight);
+                ctx.lineTo(screenWidth, screenHeight);
+                ctx.lineTo(screenWidth, 0);
+                ctx.fillStyle = "#222222";
+                ctx.closePath();
+                ctx.fill();
+                for (var _i = 0, lines_1 = lines; _i < lines_1.length; _i++) {
+                    var item = lines_1[_i];
+                    item.animate();
+                }
+            }, 1000 / 60);
         }
     }
 };
