@@ -4,6 +4,8 @@
 
 <script>
 import './assets/css/base.css'
+import './assets/css/animate.min.css'
+
 import { useRoute, useRouter } from 'vue-router'
 export default {
   name: 'App',
@@ -13,5 +15,7 @@ export default {
 </script>
 
 <style>
-
+body {
+  overflow: hidden;
+}
 </style>
