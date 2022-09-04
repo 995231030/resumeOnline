@@ -4,21 +4,21 @@
         <swiper-slide class="slideBox">
             <div class="welcome">
                 <div class="video">
-                    <video src="../assets/video/sea.mp4" autoplay loop></video>
+                    <video src="../assets/video/sea.mp4" autoplay loop muted></video>
                 </div>
                 <div class="mask"></div>
-                <!-- <div class="text">welcome</div> -->
+                <div class="text">制作你的在线简历</div>
                 <div class="btn next" @click="next">更上一层楼</div>
             </div>
         </swiper-slide>
         <swiper-slide class="slideBox">
-            <div class="resume_png">
-                resume_png
+            <div class="resume_png" id="resume_png">
+                制作单页简历
             </div>
         </swiper-slide>
         <swiper-slide class="slideBox">
             <div class="resume_online">
-                resume_online
+                制作H5在线简历
             </div>
         </swiper-slide>
     </swiper>
@@ -32,56 +32,78 @@ import { useRouter } from 'vue-router'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import iconAnimate from './iconAnimate.vue';
 import 'swiper/css';
+import lottie from 'lottie-web';
+import lottieData from '../assets/运转.json'
+
 export default {
-    components: {
-        Swiper,
-        SwiperSlide,
-        iconAnimate
-    },
-    data() {
-        return {
-            pageHeight: document.documentElement.clientHeight,
-            swiper:null
-        };
-    },
-    created() {
-    },
-    mounted() {
-        this.getSwiper()
-    },
-    setup() {
-        const router = useRouter()
-        const toLogin = (() => {
-            router.push({
-                name: 'loginRegister'
-            })
-        })
-        const onSwiper = (swiper) => {
-            console.log(swiper);
-        };
-        const onSlideChange = () => {
-            console.log('slide change');
-        };
-        return {
-            toLogin,
-            onSwiper,
-            onSlideChange,
-        }
-    },
-    methods: {
-        getSwiper(){
-            this.swiper =  document.querySelector('.swiper').swiper;
-        },
-        next(){
-            // const swiper = document.querySelector('.swiper').swiper;
-            // Now you can use all slider methods like
-            this.swiper.slideNext();
-        }
+  components: {
+    Swiper,
+    SwiperSlide,
+    iconAnimate
+  },
+  data() {
+    return {
+      pageHeight: document.documentElement.clientHeight,
+      swiper: null,
+      animation: null
+    };
+  },
+  created() {
+  },
+  mounted() {
+    this.getSwiper()
+    this.animationLottie()
+  },
+  setup() {
+    const router = useRouter()
+    const toLogin = (() => {
+      router.push({
+        name: 'loginRegister'
+      })
+    })
+    const onSwiper = (swiper) => {
+      console.log(swiper);
+    };
+
+    const onSlideChange = () => {
+      console.log('slide change');
+    };
+    return {
+      toLogin,
+      onSwiper,
+      onSlideChange,
     }
+  },
+  methods: {
+    getSwiper() {
+      this.swiper = document.querySelector('.swiper').swiper;
+    },
+    next() {
+      // const swiper = document.querySelector('.swiper').swiper;
+      // Now you can use all slider methods like
+      this.swiper.slideNext();
+    },  
+    animationLottie() {
+      this.animation = lottie.loadAnimation({
+        container: document.getElementById("resume_png"),
+        renderer: 'canvas',
+        loop: true,
+        autoplay: false,
+        animationData: lottieData,
+        // assetsPath: CDN_URL
+      })
+      this.animation.play();
+    }
+
+  }
 };
 </script>
 
 <style scoped lang="less">
+.resume_png {
+    width: 50%;
+}
+
 .welcome {
     .btn {
         position: absolute;
@@ -113,7 +135,6 @@ export default {
         top: -50%;
         overflow: hidden;
         z-index: -1;
-
     }
 
     .mask {
@@ -125,10 +146,7 @@ export default {
         left: -15%;
         filter: blur(27px);
     }
-
 }
-
-
 
 .slideBox {
     width: 100%;
