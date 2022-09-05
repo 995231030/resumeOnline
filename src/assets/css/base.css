@@ -1,15 +1,34 @@
 @import '//at.alicdn.com/t/c/font_3207837_aziin5k47rr.css';
+
 * {
     padding: 0;
     margin: 0;
     color: #333;
     font-family: "微软雅黑";
     box-sizing: border-box;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    /* 去除移动端点击蓝块 */
 }
 
 .btn {
     cursor: pointer;
     user-select: none;
+    color: #0051ff;
+    padding: 10px 25px;
+    border-radius: 100px;
+    border: 1px solid #0051ff;
+}
+
+.btn:hover {
+    background: #0051ff;
+    color: #fff;
+    transition: 0.2s;
+}
+
+.btn:hover div {
+    background: #0051ff;
+    color: #fff;
+    transition: 0.2s;
 }
 
 a {
@@ -25,4 +44,13 @@ input[type="checkbox"] {
     cursor: pointer;
     margin: 5px;
     margin-top: 6px;
+}
+
+a:focus,
+input:focus,
+p:focus,
+div:focus {
+    /* 去除移动端点击蓝块 */
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    -webkit-user-modify: read-write-plaintext-only;
 }

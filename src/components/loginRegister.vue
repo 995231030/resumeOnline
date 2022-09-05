@@ -205,17 +205,19 @@ export default {
         input {
             border: 1px solid #111;
             border-radius: 5px;
-            padding: 8px 5px;
+            padding: 12px 8px;
         }
     }
 
     .loginNow {
         display: block;
         text-align: center;
-        background: #111;
         padding: 10px 20px;
         border-radius: 5px;
-        color: #eee;
+        color: #0051ff;
+    }
+    .loginNow:hover{
+        color: #fff;
     }
 }
 </style>
