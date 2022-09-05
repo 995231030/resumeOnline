@@ -1,6 +1,6 @@
 <template>
   <swiper :slides-per-view="1" :space-between="50" @swiper="onSwiper" @slideChange="onSlideChange" direction="vertical"
-    :height="pageHeight">
+    :height="pageHeight" :modules="modules" :mousewheel="true">
     <swiper-slide class="slideBox">
       <div class="welcome">
         <div class="video">
@@ -35,11 +35,20 @@
     <swiper-slide class="slideBox">
       <div class="bottom">
         <div class="video">
-          <video src="../assets/video/sea.mp4" autoplay loop muted></video>
+          <video src="../assets/video/sun.mp4" autoplay loop muted></video>
           <div class="mask"></div>
         </div>
-        <div class="text">山重水复疑无路，柳暗花明又一村</div>
-        <div class="footer"></div>
+        <div class="text">山重水复疑无路</div>
+        <div class="text text1">柳暗花明又一村</div>
+        <div class="footer">
+          <span>©2022 加伊的简历 版权所有</span>
+          <a href="https://beian.miit.gov.cn" target="_blank">鲁ICP备2022006877号-1</a>
+          <div style="display: flex; align-items: center; justify-content: center;">
+            <img src="../assets/备案图标.d0289dc.png" alt="">
+            <a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=37083202370978" target="_blank">鲁公网安备
+              37083202370978号</a>
+          </div>
+        </div>
       </div>
     </swiper-slide>
   </swiper>
@@ -52,6 +61,7 @@
 <script>
 import { useRouter } from 'vue-router'
 import { Swiper, SwiperSlide } from 'swiper/vue'
+import { Mousewheel } from 'swiper'
 import iconAnimate from './iconAnimate.vue';
 import 'swiper/css';
 import lottie from 'lottie-web';
@@ -69,7 +79,7 @@ export default {
       pageHeight: document.documentElement.clientHeight,
       swiper: null,
       animation: null,
-      animation1: null
+      animation1: null,
     };
   },
   created() {
@@ -96,6 +106,7 @@ export default {
       toLogin,
       onSwiper,
       onSlideChange,
+      modules: [Mousewheel]
     }
   },
   methods: {
@@ -137,9 +148,19 @@ export default {
   position: absolute;
   bottom: 0;
   left: 0;
-  height: 20vh;
+  height: 10vh;
   width: 100vw;
   background: #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.5;
+
+  a,
+  span {
+    color: #fff;
+    padding: 0 15px;
+  }
 }
 
 .resume_png {
@@ -170,6 +191,8 @@ export default {
     left: 0;
     padding: 60px;
   }
+
+
 }
 
 .resume_online {
@@ -251,12 +274,16 @@ export default {
     text-shadow: 0 0 5px #000;
   }
 
+  .text1 {
+    top: 50%;
+  }
+
   .video {
     position: absolute;
-    top: -50%;
+    top: -45%;
     overflow: hidden;
     z-index: -1;
-    animation: flowOver 15s forwards linear;
+    //  animation: flowOver 15s forwards linear;
   }
 
   @keyframes flowOver {
