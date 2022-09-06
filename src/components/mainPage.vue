@@ -14,7 +14,7 @@
     <swiper-slide class="slideBox">
       <div class="resume_png">
         <div id="lottie_1">
-          <div class="btn">现在开始</div>
+          <div class="btn" @click="toOnePage">现在开始</div>
         </div>
         <div class="text">
           制作单页简历
@@ -28,7 +28,7 @@
         </div>
         <div class="text">
           制作在线简历
-          <span style="font-size: 12px;color: #b9b9b9;">( 需要登录 )</span>
+          <span style="font-size: 12px;color: #b9b9b9;white-space:nowrap;">( 需要登录 )</span>
         </div>
       </div>
     </swiper-slide>
@@ -95,6 +95,11 @@ export default {
         name: 'loginRegister'
       })
     })
+    const toOnePage = (() => {
+      router.push({
+        name: 'onePage'
+      })
+    })
     const onSwiper = (swiper) => {
       console.log(swiper);
     };
@@ -106,6 +111,7 @@ export default {
       toLogin,
       onSwiper,
       onSlideChange,
+      toOnePage,
       modules: [Mousewheel]
     }
   },
@@ -160,6 +166,16 @@ export default {
   span {
     color: #fff;
     padding: 0 15px;
+  }
+
+  @media screen and (max-width :768px) {
+    flex-direction: column;
+    height: 30vh;
+
+    a,
+    span {
+      padding: 8px;
+    }
   }
 }
 

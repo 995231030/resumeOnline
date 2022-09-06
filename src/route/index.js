@@ -1,6 +1,7 @@
 import { createRouter, createWebHashHistory } from "vue-router";
 const mainPage = () => import("../components/mainPage.vue")
 const loginRegister = () => import("../components/loginRegister")
+const onePage = () => import("../components/onePage")
 
 const routes = [
     { path: "/", redirect: "/mainPage" },
@@ -13,6 +14,11 @@ const routes = [
         path: "/loginRegister",
         name: "loginRegister",
         component: loginRegister
+    },
+    {
+        path: "/onePage",
+        name: "onePage",
+        component: onePage
     }
 ]
 const router = createRouter({
