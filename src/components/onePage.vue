@@ -1,6 +1,6 @@
 <template>
     <div class="onePage">
-        <div class="baseInfo">
+        <div class="baseInfo box">
             <div class="avatar" :style="styles[choose].avatar">
                 <div class="mask">
                     <span class="iconfont larry-shangchuan"></span>
@@ -10,30 +10,34 @@
                         alt="">
                 </div>
             </div>
-            <div class="name">
-                <span>菜须坤</span>
-            </div>
             <div class="infos">
                 <div class="infosItem">
+                    <span class="itemTitle">姓名</span>
+                    <input :value="baseInfo.name" placeholder="姓名" />
+                </div>
+                <div class="infosItem">
                     <span class="itemTitle">籍贯</span>
-                    <span>阿麦瑞可</span>
+                    <input :value="baseInfo.address" placeholder="籍贯" />
                 </div>
                 <div class="infosItem">
                     <span class="itemTitle">经验</span>
-                    <span>2.5年</span>
+                    <input :value="baseInfo.work" placeholder="经验" />
                 </div>
                 <div class="infosItem">
                     <span class="itemTitle">性别</span>
-                    <span>保密</span>
+                    <input :value="baseInfo.gender" placeholder="性别" />
                 </div>
                 <div class="infosItem">
                     <span class="itemTitle">生日</span>
-                    <span>
-                        1998年8月2日
-                    </span>
+                    <input :value="baseInfo.birthday" placeholder="生日" />
                 </div>
             </div>
         </div>
+        <div v-for="item in boxList" :key="item.id" class="box"
+            :style="`width:${item.width}vw;height:${item.height}vh`">
+            <textarea id="demo" style="display: none;"></textarea>
+        </div>
+        <div class="addBox box" @click="addBox">添加新块</div>
     </div>
 </template>
 
@@ -47,7 +51,15 @@ export default {
                     id: 0,
                     avatar: 'width: 130px;height: 130px;background: #ddd;border-radius: 100px;'
                 }
-            ]
+            ],
+            baseInfo: {
+                name: "蔡徐坤",
+                address: "American",
+                work: "2.5年",
+                birthday: "1998年8月2日",
+                gender: "保密"
+            },
+            boxList: []
         };
     },
     created() {
@@ -57,29 +69,95 @@ export default {
 
     },
     methods: {
-
+        addBox() {
+            this.boxList.push({
+                id: 0,
+                width: 15,
+                height: 10
+            })
+        }
     }
 };
 </script>
 
 <style scoped lang="less">
+.box {
+    border: 1px solid rgba(238, 238, 238, 0.863);
+    border-radius: 10px;
+    margin-bottom: 10px;
+
+    input {
+        height: 100%;
+        width: 100%;
+    }
+}
+
+.box.active {
+    animation: lum 2s infinite;
+}
+
+@keyframes lum {
+    0% {}
+
+    50% {
+        border: 1px solid #0051ff;
+    }
+
+    100% {}
+}
+
+.addBox {
+    border: 1px solid #0051ff;
+    color: #0051ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: 0.2s;
+    padding: 10px;
+    margin: 5px;
+    font-size: 12px;
+}
+
+.addBox:hover {
+    background: #0051ff;
+    color: #fff;
+    transition: 0.2s;
+}
+
 .onePage {
     padding: 20px;
     display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
+    height: 100vh;
+    flex-wrap: wrap;
 }
 
 .baseInfo {
     display: flex;
     align-items: center;
-    justify-content: center;
     flex-direction: column;
 
     .infos {
         .infosItem {
             padding: 10px 0;
+            display: flex;
+
+            input {
+                border: none;
+                background: #dfe9ff;
+                padding: 5px;
+                padding-left: 10px;
+                border-radius: 100px;
+                color: #374e83;
+            }
 
             .itemTitle {
                 min-width: 70px;
+                padding: 0 10px;
                 display: inline-block;
             }
         }
@@ -93,6 +171,8 @@ export default {
         cursor: pointer;
         overflow: hidden;
         position: relative;
+        margin: 10px;
+        margin-left: 0;
 
         .img {
             position: absolute;
@@ -134,5 +214,7 @@ export default {
             opacity: 0.6;
         }
     }
+
+
 }
 </style>
