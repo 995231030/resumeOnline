@@ -34,15 +34,25 @@
             </div>
         </div>
         <div v-for="item in boxList" :key="item.id" class="box"
-            :style="`width:${item.width}vw;height:${item.height}vh`">
-            <textarea id="demo" style="display: none;"></textarea>
+            :style="`min-width:${item.width}vw;min-height:${item.height}vh`">
+            <!-- <Toolbar style="border-bottom: 1px solid #ccc" :editor="editorRef" :defaultConfig="toolbarConfig"
+                :mode="mode" /> -->
+            {{valueHtml[item.id]}}
+            <Editor style="height: 100%;border-radius: 10px; background: none;" :value="item.valueHtml"
+                :defaultConfig="editorConfig" :mode="mode" @onCreated="handleCreated" />
+            <div class="delete" @click="deleteBox(item.id)">×</div>
         </div>
-        <div class="addBox box" @click="addBox">添加新块</div>
+        <div class="addBox box" @click="addBox" id="addBox">添加新块</div>
     </div>
 </template>
 
 <script>
+import '@wangeditor/editor/dist/css/style.css' // 引入 css
+// import { onBeforeUnmount, ref, shallowRef } from 'vue'
+import { onBeforeUnmount, ref } from 'vue'
+import { Editor } from '@wangeditor/editor-for-vue'
 export default {
+    components: { Editor },
     data() {
         return {
             choose: 0,
@@ -59,21 +69,92 @@ export default {
                 birthday: "1998年8月2日",
                 gender: "保密"
             },
-            boxList: []
+            boxList: [
+                {
+                    id: 0,
+                    width: 15,
+                    height: 10,
+                    valueHtml: ref("")
+                }
+            ],
+            editorConfig: { placeholder: '请输入内容...' },
+            mode: 'default', // 或 'simple'
+            // valueHtml: ref(''),
+            valueHtml: [],
+            toolbarConfig: {},
+            // editorRef: shallowRef()
+            editorList: [],
+            ref: ref
         };
     },
     created() {
 
     },
     mounted() {
-
+        onBeforeUnmount(() => {
+            // const editorList = this.editorList
+            // console.log(this.editorRef.value)
+            // if (editorList.length == 0) return
+            // for (let item of this.editorList) {
+            //     item.destroy()
+            // }
+        })
+    },
+    setup() {
+        // 编辑器实例，必须用 shallowRef
+        // const editorRef = shallowRef()
+        // 内容 HTML
+        // 模拟 ajax 异步获取内容
+        // onMounted(() => {
+        //     setTimeout(() => {
+        //         valueHtml.value = ''
+        //     }, 1500)
+        // })
+        // const toolbarConfig = {}
+        // const editorConfig = { placeholder: '请输入内容...' }
+        // 组件销毁时，也及时销毁编辑器
+        // onBeforeUnmount(() => {
+        //     const editor = editorRef.value
+        //     if (editor == null) return
+        //     editor.destroy()
+        // })
+        // const handleCreated = (editor) => {
+        //     editorRef.value = editor // 记录 editor 实例，重要！
+        // }
+        return {
+            // editorRef,
+            // toolbarConfig,
+            // editorConfig,
+            // handleCreated
+        };
     },
     methods: {
+        handleCreated(editor) {
+            // this.editorRef = shallowRef()
+            // this.editorRef.value = editor // 记录 editor 实例，重要！
+            // console.log(editor)
+            this.editorList.push(editor)
+        },
         addBox() {
+            let addBox = document.getElementById("addBox")
+            console.log(addBox.offsetTop, document.body.clientHeight)
+            let poL = addBox.offsetLeft / document.body.clientWidth
+            let poT = addBox.offsetTop / document.body.clientHeight
+            console.log(poL, poT)
+            if (poL > 0.8 || (poL > 0.74 && poT > 0.80)) {
+                alert("不可再添加更多")
+                return
+            }
             this.boxList.push({
-                id: 0,
+                id: this.boxList[this.boxList.length - 1].id + 1,
                 width: 15,
-                height: 10
+                height: 10,
+                valueHtml: ref("")
+            })
+        },
+        deleteBox(id) {
+            this.boxList = this.boxList.filter((item) => {
+                return item.id != id
             })
         }
     }
@@ -85,11 +166,35 @@ export default {
     border: 1px solid rgba(238, 238, 238, 0.863);
     border-radius: 10px;
     margin-bottom: 10px;
+    position: relative;
+    transition: 0.2s;
+    max-width: 24vw;
+
+    .delete {
+        position: absolute;
+        top: 0;
+        right: 0;
+        transform: translateX(40%) translateY(-40%);
+        background: red;
+        color: #fff;
+        height: 22px;
+        width: 22px;
+        border-radius: 100px;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
 
     input {
         height: 100%;
         width: 100%;
     }
+}
+
+.box:hover .delete {
+    display: flex;
+    z-index: 9;
 }
 
 .box.active {
@@ -131,7 +236,6 @@ export default {
     display: flex;
     flex-direction: column;
     justify-content: start;
-    align-items: start;
     height: 100vh;
     flex-wrap: wrap;
 }
