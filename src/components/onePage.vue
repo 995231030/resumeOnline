@@ -35,11 +35,10 @@
         </div>
         <div v-for="item in boxList" :key="item.id" class="box"
             :style="`min-width:${item.width}vw;min-height:${item.height}vh`">
-            <!-- <Toolbar style="border-bottom: 1px solid #ccc" :editor="editorRef" :defaultConfig="toolbarConfig"
-                :mode="mode" /> -->
+            <!-- <Toolbar style="border-bottom: 1px solid #ccc" :editor="editorList[item.id]" :defaultConfig="toolbarConfig" :mode="mode" /> -->
             {{valueHtml[item.id]}}
             <Editor style="height: 100%;border-radius: 10px; background: none;" :value="item.valueHtml"
-                :defaultConfig="editorConfig" :mode="mode" @onCreated="handleCreated" />
+                :defaultConfig="editorConfig" :mode="mode" @onCreated="handleCreated" @customPaste="customPaste" />
             <div class="delete" @click="deleteBox(item.id)">×</div>
         </div>
         <div class="addBox box" @click="addBox" id="addBox">添加新块</div>
@@ -77,7 +76,7 @@ export default {
                     valueHtml: ref("")
                 }
             ],
-            editorConfig: { placeholder: '请输入内容...' },
+            editorConfig: { placeholder: '请输入内容...', uploadImgShowBase64: true },
             mode: 'default', // 或 'simple'
             // valueHtml: ref(''),
             valueHtml: [],
@@ -129,6 +128,32 @@ export default {
         };
     },
     methods: {
+        customPaste(editor, event) {
+            // event 是 ClipboardEvent 类型，可以拿到粘贴的数据
+            // 可参考 https://developer.mozilla.org/zh-CN/docs/Web/API/ClipboardEvent
+            // const html = event.clipboardData.getData('text/html') // 获取粘贴的 html
+            // const text = event.clipboardData.getData('text/plain') // 获取粘贴的纯文本
+            // const rtf = event.clipboardData.getData('text/rtf') // 获取 rtf 数据（如从 word wsp 复制粘贴）
+            // 同步
+            console.log(event)
+            // editor.insertText(rtf)
+            // 异步
+            // 阻止默认的粘贴行为
+            event.preventDefault()
+            return false
+            // 继续执行默认的粘贴行为
+            // return true
+        },
+        imgInsert(files) {
+            for (let file of files) {
+                const r = new FileReader();
+                r.readAsDataURL(file);
+                r.onload = function () {
+                    console.log(r.result)
+                    // insertImgFn(r.result);
+                };
+            }
+        },
         handleCreated(editor) {
             // this.editorRef = shallowRef()
             // this.editorRef.value = editor // 记录 editor 实例，重要！
@@ -137,10 +162,8 @@ export default {
         },
         addBox() {
             let addBox = document.getElementById("addBox")
-            console.log(addBox.offsetTop, document.body.clientHeight)
             let poL = addBox.offsetLeft / document.body.clientWidth
             let poT = addBox.offsetTop / document.body.clientHeight
-            console.log(poL, poT)
             if (poL > 0.8 || (poL > 0.74 && poT > 0.80)) {
                 alert("不可再添加更多")
                 return
