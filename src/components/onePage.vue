@@ -76,7 +76,7 @@ export default {
                     valueHtml: ref("")
                 }
             ],
-            editorConfig: { placeholder: '请输入内容...', uploadImgShowBase64: true },
+            editorConfig: { placeholder: '请输入内容...', uploadImgShowBase64: true, pasteIgnoreImg: false },
             mode: 'default', // 或 'simple'
             // valueHtml: ref(''),
             valueHtml: [],
@@ -131,11 +131,12 @@ export default {
         customPaste(editor, event) {
             // event 是 ClipboardEvent 类型，可以拿到粘贴的数据
             // 可参考 https://developer.mozilla.org/zh-CN/docs/Web/API/ClipboardEvent
-            // const html = event.clipboardData.getData('text/html') // 获取粘贴的 html
-            // const text = event.clipboardData.getData('text/plain') // 获取粘贴的纯文本
-            // const rtf = event.clipboardData.getData('text/rtf') // 获取 rtf 数据（如从 word wsp 复制粘贴）
+            const html = event.clipboardData.getData('text/html') // 获取粘贴的 html
+            const text = event.clipboardData.getData('text/plain') // 获取粘贴的纯文本
+            const rtf = event.clipboardData.getData('text/rtf') // 获取 rtf 数据（如从 word wsp 复制粘贴）
             // 同步
-            console.log(event)
+            console.log(`html:${html} text:${text}  rtf:${rtf}`)
+            // console.log(editor.getHtml())
             // editor.insertText(rtf)
             // 异步
             // 阻止默认的粘贴行为
