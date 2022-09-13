@@ -35,23 +35,20 @@
         </div>
         <div v-for="item in boxList" :key="item.id" class="box"
             :style="`min-width:${item.width}vw;min-height:${item.height}vh`">
-            <!-- <Toolbar style="border-bottom: 1px solid #ccc" :editor="editorList[item.id]" :defaultConfig="toolbarConfig" :mode="mode" /> -->
-            {{valueHtml[item.id]}}
-            <Editor style="height: 100%;border-radius: 10px; background: none;" :value="item.valueHtml"
-                :defaultConfig="editorConfig" :mode="mode" @onCreated="handleCreated" @customPaste="customPaste" />
             <div class="delete" @click="deleteBox(item.id)">×</div>
+            <QuillEditor theme="snow" />
         </div>
         <div class="addBox box" @click="addBox" id="addBox">添加新块</div>
     </div>
 </template>
 
 <script>
-import '@wangeditor/editor/dist/css/style.css' // 引入 css
-// import { onBeforeUnmount, ref, shallowRef } from 'vue'
-import { onBeforeUnmount, ref } from 'vue'
-import { Editor } from '@wangeditor/editor-for-vue'
+import { QuillEditor } from '@vueup/vue-quill'
+import '@vueup/vue-quill/dist/vue-quill.snow.css';
 export default {
-    components: { Editor },
+    components: {
+        QuillEditor
+    },
     data() {
         return {
             choose: 0,
@@ -73,31 +70,15 @@ export default {
                     id: 0,
                     width: 15,
                     height: 10,
-                    valueHtml: ref("")
                 }
             ],
-            editorConfig: { placeholder: '请输入内容...', uploadImgShowBase64: true, pasteIgnoreImg: false },
-            mode: 'default', // 或 'simple'
-            // valueHtml: ref(''),
-            valueHtml: [],
-            toolbarConfig: {},
-            // editorRef: shallowRef()
             editorList: [],
-            ref: ref
         };
     },
     created() {
 
     },
     mounted() {
-        onBeforeUnmount(() => {
-            // const editorList = this.editorList
-            // console.log(this.editorRef.value)
-            // if (editorList.length == 0) return
-            // for (let item of this.editorList) {
-            //     item.destroy()
-            // }
-        })
     },
     setup() {
         // 编辑器实例，必须用 shallowRef
@@ -128,39 +109,12 @@ export default {
         };
     },
     methods: {
-        customPaste(editor, event) {
-            // event 是 ClipboardEvent 类型，可以拿到粘贴的数据
-            // 可参考 https://developer.mozilla.org/zh-CN/docs/Web/API/ClipboardEvent
-            const html = event.clipboardData.getData('text/html') // 获取粘贴的 html
-            const text = event.clipboardData.getData('text/plain') // 获取粘贴的纯文本
-            const rtf = event.clipboardData.getData('text/rtf') // 获取 rtf 数据（如从 word wsp 复制粘贴）
-            // 同步
-            console.log(`html:${html} text:${text}  rtf:${rtf}`)
-            // console.log(editor.getHtml())
-            // editor.insertText(rtf)
-            // 异步
-            // 阻止默认的粘贴行为
-            event.preventDefault()
-            return false
-            // 继续执行默认的粘贴行为
-            // return true
+        onEditorReady(editor) { // 准备编辑器
+
         },
-        imgInsert(files) {
-            for (let file of files) {
-                const r = new FileReader();
-                r.readAsDataURL(file);
-                r.onload = function () {
-                    console.log(r.result)
-                    // insertImgFn(r.result);
-                };
-            }
-        },
-        handleCreated(editor) {
-            // this.editorRef = shallowRef()
-            // this.editorRef.value = editor // 记录 editor 实例，重要！
-            // console.log(editor)
-            this.editorList.push(editor)
-        },
+        onEditorBlur() { }, // 失去焦点事件
+        onEditorFocus() { }, // 获得焦点事件
+        onEditorChange() { }, // 内容改变事件
         addBox() {
             let addBox = document.getElementById("addBox")
             let poL = addBox.offsetLeft / document.body.clientWidth
@@ -173,7 +127,7 @@ export default {
                 id: this.boxList[this.boxList.length - 1].id + 1,
                 width: 15,
                 height: 10,
-                valueHtml: ref("")
+                // valueHtml: ref("")
             })
         },
         deleteBox(id) {
