@@ -33,22 +33,24 @@
                 </div>
             </div>
         </div>
-        <div v-for="item in boxList" :key="item.id" class="box"
-            :style="`min-width:${item.width}vw;min-height:${item.height}vh`">
+        <!-- item.editor.isFocused()?'active':'' -->
+        <div v-for="item in boxList" :key="item.id" :class="item.active?'box active':'box'"
+            :style="`min-width:${item.width}vw;min-height:${item.height}vh`" @click="foucs(item)">
             <div class="delete" @click="deleteBox(item.id)">×</div>
-            <QuillEditor theme="snow" />
+            <Editor :style="`height: 100%;background:none`" :value="item.valueHtml" :defaultConfig="editorConfig"
+                :mode="mode" @onCreated="handleCreated" />
         </div>
         <div class="addBox box" @click="addBox" id="addBox">添加新块</div>
     </div>
 </template>
 
 <script>
-import { QuillEditor } from '@vueup/vue-quill'
-import '@vueup/vue-quill/dist/vue-quill.snow.css';
+import pasteImage from "paste-image"
+import { ref } from 'vue'
+import { Editor } from '@wangeditor/editor-for-vue'
+import '@wangeditor/editor/dist/css/style.css' // 引入 css
 export default {
-    components: {
-        QuillEditor
-    },
+    components: { Editor },
     data() {
         return {
             choose: 0,
@@ -70,15 +72,32 @@ export default {
                     id: 0,
                     width: 15,
                     height: 10,
+                    valueHtml: ref(""),
                 }
             ],
             editorList: [],
+            editorConfig: { placeholder: '请输入内容...', scroll: false },
+            mode: 'default',
         };
     },
+    beforeCreate() {
+    },
     created() {
-
     },
     mounted() {
+        pasteImage.on('paste-image', (image) => {
+            for (let item of this.boxList) {
+                if (item.editor.isFocused()) {
+                    let newHTML = item.editor.getHtml() + `<img src='${image.src}' />`
+                    item.editor.setHtml(newHTML)
+                    break
+                    // document.body.appendChild(image);
+                }
+            }
+            return
+            // Display the image by appending it to the end of the body
+            // document.body.appendChild(image);
+        });
     },
     setup() {
         // 编辑器实例，必须用 shallowRef
@@ -109,12 +128,16 @@ export default {
         };
     },
     methods: {
-        onEditorReady(editor) { // 准备编辑器
-
+        foucs(item) {
+            item.editor.isFocused()
+            for (let item of this.boxList) {
+                item.active = false
+            }
+            item.active = true
         },
-        onEditorBlur() { }, // 失去焦点事件
-        onEditorFocus() { }, // 获得焦点事件
-        onEditorChange() { }, // 内容改变事件
+        handleCreated(editor) {
+            this.boxList[this.boxList.length - 1].editor = editor
+        },
         addBox() {
             let addBox = document.getElementById("addBox")
             let poL = addBox.offsetLeft / document.body.clientWidth
@@ -146,7 +169,7 @@ export default {
     margin-bottom: 10px;
     position: relative;
     transition: 0.2s;
-    max-width: 24vw;
+    margin: 5px;
 
     .delete {
         position: absolute;
@@ -213,7 +236,7 @@ export default {
     padding: 20px;
     display: flex;
     flex-direction: column;
-    justify-content: start;
+    justify-content: flex-start;
     height: 100vh;
     flex-wrap: wrap;
 }
