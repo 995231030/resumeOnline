@@ -18,7 +18,10 @@ const routes = [
     {
         path: "/onePage",
         name: "onePage",
-        component: onePage
+        component: onePage,
+        meta:{
+            keepAlive : true
+        }
     }
 ]
 const router = createRouter({
