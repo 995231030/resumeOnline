@@ -9,8 +9,8 @@ const toast = {
             return
         }
         var dom = document.createElement("toast");
-        let iconList = ["larry-zhengque", "larry-cuowu", "larry-xinxi", "larry-gonggao"]
-        let colorList = ["#44c28a", "#ff0000", "#f7931e", "#666"]
+        let iconList = ["larry-zhengque", "larry-cuowu", "larry-xinxi", "larry-gonggao", "larry-jiazailoading-A"]
+        let colorList = ["#44c28a", "#ff0000", "#f7931e", "#666", "#999"]
         dom.className = "toast"; //给我们创建的dom节点写一个类名
         dom.id = "toast" //这是id
         dom.style.position = "fixed"
@@ -27,7 +27,7 @@ const toast = {
         dom.style.alignItems = "center"
         dom.style.transform = "translateX(-50%) translateY(-50%)"
         dom.style.background = colorList[level - 1]
-        dom.innerHTML = "<span class='iconfont " + iconList[level - 1] + "' style='color:#fff" + ";padding-right:10px;font-size:18px'></span>" + `<span style='color:#fff'>${text}</span>;`
+        dom.innerHTML = "<span class='iconfont " + iconList[level - 1] + "' style='color:#fff" + ";margin-right:10px;font-size:18px' id='loading'></span>" + `<span style='color:#fff'>${text}</span>`
         setTimeout(() => {
             dom.style.opacity = "1"
             dom.style.top = "20%"
@@ -38,6 +38,15 @@ const toast = {
         }, text.length >= 12 ? 8000 : 5000)
         console.log()
         document.getElementById("app").appendChild(dom);
+        if (level == 5) {
+            document.getElementById("loading").style.transformOrigin = "50% 50%"
+            document.getElementById("loading").style.animation = "loading 1s infinite linear"
+            setTimeout(() => {
+                document.getElementById('toast').remove()
+                this.showToast(1, '删除成功')
+            }, 2000)
+            return
+        }
         setTimeout("document.getElementById('toast').remove()", text.length >= 12 ? 8500 : 5500) //事情办完
     },
     closeToast() {

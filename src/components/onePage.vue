@@ -11,52 +11,60 @@
                     <span>已保存</span>
                 </div>
             </div>
-            <div class="baseInfo box">
-                <div class="avatar" :style="styles[choose].avatar">
-                    <div class="mask">
-                        <input type="file" name="" id="avatarFile"
-                            style="position: absolute;opacity: 0;cursor: pointer;" @change="getAvatarFile">
-                        <span class="iconfont larry-shangchuan"></span>
-                    </div>
-                    <div class="img">
-                        <img :src="baseInfo.avatar?baseInfo.avatar:avatarDefault" alt="">
-                    </div>
-                </div>
-                <div class="infos">
-                    <div class="infosItem">
-                        <span class="itemTitle">姓名</span>
-                        <span class="finText" v-if="isDownloadAsPng">{{baseInfo.name}}</span>
-                        <input :value="baseInfo.name" placeholder="姓名" v-if="!isDownloadAsPng" />
-                    </div>
-                    <div class="infosItem">
-                        <span class="itemTitle">籍贯</span>
-                        <span class="finText" v-if="isDownloadAsPng">{{baseInfo.address}}</span>
-                        <input :value="baseInfo.address" placeholder="籍贯" v-if="!isDownloadAsPng" />
-                    </div>
-                    <div class="infosItem">
-                        <span class="itemTitle">经验</span>
-                        <span class="finText" v-if="isDownloadAsPng">{{baseInfo.work}}</span>
-                        <input :value="baseInfo.work" placeholder="经验" v-if="!isDownloadAsPng" />
-                    </div>
-                    <div class="infosItem">
-                        <span class="itemTitle">性别</span>
-                        <span class="finText" v-if="isDownloadAsPng">{{baseInfo.gender}}</span>
-                        <input :value="baseInfo.gender" placeholder="性别" v-if="!isDownloadAsPng" />
-                    </div>
-                    <div class="infosItem">
-                        <span class="itemTitle">生日</span>
-                        <span class="finText" v-if="isDownloadAsPng">{{baseInfo.birthday}}</span>
-                        <input :value="baseInfo.birthday" placeholder="生日" v-if="!isDownloadAsPng" />
-                    </div>
-                </div>
-            </div>
+
             <!-- item.editor.isFocused()?'active':'' -->
-            <div v-for="item in boxList" :key="item.id" :class="item.active?'box active':'box'"
-                :style="`min-width:${item.width}vw;min-height:${item.height}vh`" @click="foucs(item)">
-                <div class="delete" @click="deleteBox(item.id)">×</div>
-                <Editor :style="`height: 100%;background:none`" v-model="item.valueHtml" :defaultConfig="editorConfig"
-                    :mode="mode" @onCreated="handleCreated" @onChange='changed' />
-            </div>
+
+            <transition-group>
+                <div class="baseInfo box">
+                    <div class="avatar" :style="styles[choose].avatar">
+                        <div class="mask">
+                            <input type="file" name="" id="avatarFile"
+                                style="position: absolute;opacity: 0;cursor: pointer;" @change="getAvatarFile">
+                            <span class="iconfont larry-shangchuan"></span>
+                        </div>
+                        <div class="img">
+                            <img :src="baseInfo.avatar?baseInfo.avatar:avatarDefault" alt="">
+                        </div>
+                    </div>
+                    <div class="infos">
+                        <div class="infosItem">
+                            <span class="itemTitle">姓名</span>
+                            <span class="finText" v-if="isDownloadAsPng">{{baseInfo.name}}</span>
+                            <input v-model="baseInfo.name" placeholder="姓名" v-if="!isDownloadAsPng" />
+                        </div>
+                        <div class="infosItem">
+                            <span class="itemTitle">籍贯</span>
+                            <span class="finText" v-if="isDownloadAsPng">{{baseInfo.address}}</span>
+                            <input v-model="baseInfo.address" placeholder="籍贯" v-if="!isDownloadAsPng" />
+                        </div>
+                        <div class="infosItem">
+                            <span class="itemTitle">经验</span>
+                            <span class="finText" v-if="isDownloadAsPng">{{baseInfo.work}}</span>
+                            <input v-model="baseInfo.work" placeholder="经验" v-if="!isDownloadAsPng" />
+                        </div>
+                        <div class="infosItem">
+                            <span class="itemTitle">性别</span>
+                            <span class="finText" v-if="isDownloadAsPng">{{baseInfo.gender}}</span>
+                            <input v-model="baseInfo.gender" placeholder="性别" v-if="!isDownloadAsPng" />
+                        </div>
+                        <div class="infosItem">
+                            <span class="itemTitle">生日</span>
+                            <span class="finText" v-if="isDownloadAsPng">{{baseInfo.birthday}}</span>
+                            <input v-model="baseInfo.birthday" placeholder="生日" v-if="!isDownloadAsPng" />
+                        </div>
+                    </div>
+                </div>
+                <div v-for="(item,index) in boxList" :key="item.id" :class="item.active?'box active':'box'"
+                    :style="`min-width:${item.width}vw;min-height:${item.height}vh`" @click="foucs(item)">
+                    <div class="itemOptions">
+                        <span class="up" @click="sortUp(index)">↑</span>
+                        <span class="down" @click="sortDown(index)">↓</span>
+                        <span @click="deleteBox(item.id)" class="delete">×</span>
+                    </div>
+                    <Editor :style="`height: 100%;background:none`" v-model="item.valueHtml"
+                        :defaultConfig="editorConfig" :mode="mode" @onCreated="handleCreated" @onChange='changed' />
+                </div>
+            </transition-group>
             <div class="options" id="options" v-if="!preview">
                 <div class="addBox" @click="setData">保存</div>
                 <div class="addBox" @click="previewNow">预览和下载</div>
@@ -82,6 +90,7 @@ import { ref } from 'vue'
 import { Editor } from '@wangeditor/editor-for-vue'
 import '@wangeditor/editor/dist/css/style.css' // 引入 css
 import toast from '../utils/showTip'
+import modal from '../utils/modal'
 import html2canvas from "html2canvas"
 import { Download } from "../utils/base64Download";//文件下载
 import avatarDefault from "../assets/img/avatar.png"
@@ -116,12 +125,12 @@ export default {
             editorList: [],
             editorConfig: { placeholder: '请输入内容...', scroll: false },
             mode: 'default',
-            isPreserved: false,
-            preview: false,
-            isDownloadAsPng: false,
-            previewImg: "",
-            ispreviewImg: false,
-            watermark: false
+            isPreserved: false, //是否保存
+            preview: false, //预览时隐藏按钮
+            isDownloadAsPng: false, //截图时隐藏
+            previewImg: "", //图片base64或地址
+            ispreviewImg: false,//预览图片全屏显示
+            watermark: false,//截图时水印
         };
     },
     beforeCreate() {
@@ -147,6 +156,20 @@ export default {
         document.addEventListener('keypress', this.keypressFn)
     },
     methods: {
+        sortUp(index) {
+            if (undefined == this.boxList[index - 1]) {
+                toast.showToast(2, "已经在第一位")
+                return
+            }
+            this.boxList[index - 1] = this.boxList.splice(index, 1, this.boxList[index - 1])[0]
+        },
+        sortDown(index) {
+            if (undefined == this.boxList[index + 1]) {
+                toast.showToast(2, "已经在最后一位")
+                return
+            }
+            this.boxList[index + 1] = this.boxList.splice(index, 1, this.boxList[index + 1])[0]
+        },
         downloadNow() {
             let downloadName = "在线简历导出 in 加伊在线.png";//文件名
             let imgData = this.previewImg.slice(22);//base64  这里把base64头去掉
@@ -195,7 +218,7 @@ export default {
                 return
             }
             let files = document.getElementById('avatarFile').files[0];
-            if(undefined == files){
+            if (undefined == files) {
                 return
             }
             var reader = new FileReader()
@@ -267,7 +290,7 @@ export default {
         },
         changed() {
             if (this.checkIsOverFlow()) {
-                toast.showToast(3, "注意 ， 内容即将超出纸张大小")
+                toast.showToast(3, "注意 ， 内容超出纸张大小")
                 return
             }
             this.isPreserved = false
@@ -286,6 +309,9 @@ export default {
         },
         checkIsOverFlow() {  //检查元素是否超出屏幕或已经接近屏幕
             let options = document.getElementById("options")
+            if (options.offsetLeft + options.clientWidth > document.body.clientWidth) {
+                return true
+            }
             let poL = options.offsetLeft / document.body.clientWidth
             let poT = options.offsetTop / document.body.clientHeight
             if (poL > 0.8 || (poL > 0.74 && poT > 0.80)) {
@@ -311,10 +337,22 @@ export default {
             }, 10)
         },
         deleteBox(id) {
-            this.boxList = this.boxList.filter((item) => {
-                return item.id != id
-            })
-            // this.setStorage()
+            if (null == id) {
+                return
+            }
+            if (this.boxList[id].editor.getText() == "") {
+                this.boxList = this.boxList.filter((item) => {
+                    return item.id != id
+                })
+            } else
+                modal.showModal(2, "确定删除此块？", (confirm) => {
+                    toast.showToast(5, "正在删除")
+                    if (confirm) {
+                        this.boxList = this.boxList.filter((item) => {
+                            return item.id != id
+                        })
+                    }
+                })
         }
     }
 };
@@ -340,6 +378,7 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
+
     z-index: 99;
 
     img {
@@ -402,12 +441,62 @@ export default {
     transition: 0.2s;
     margin: 5px;
 
-    .delete {
+
+
+    .itemOptions {
         position: absolute;
         top: 0;
-        right: 0;
-        transform: translateX(40%) translateY(-40%);
-        background: red;
+        right: 50%;
+        transform: translateX(50%) translateY(-40%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        display: none;
+
+        span {
+            color: #fff;
+            height: 23px;
+            width: 23px;
+            border-radius: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            margin: 2px;
+        }
+
+        .delete {
+            border: 1px solid #f00;
+            color: #f00;
+            background: #fff;
+        }
+
+        .delete:hover {
+            background: #f00;
+            color: #fff;
+        }
+
+        .up,
+        .down {
+            border: 1px solid #0051ff;
+            font-size: 12px;
+            color: #0051ff;
+            background: #fff;
+        }
+
+        .up:hover,
+        .down:hover {
+            background: #0051ff;
+            color: #fff;
+        }
+    }
+
+    .move {
+        position: absolute;
+        top: 0;
+        left: 0;
+        transform: translateX(-40%) translateY(-40%);
+        background: #0051ff;
         color: #fff;
         height: 22px;
         width: 22px;
@@ -415,7 +504,8 @@ export default {
         display: none;
         align-items: center;
         justify-content: center;
-        cursor: pointer;
+        cursor: move;
+        user-select: none;
     }
 
     input {
@@ -424,7 +514,12 @@ export default {
     }
 }
 
-.box:hover .delete {
+.box:hover .move {
+    display: flex;
+    z-index: 9;
+}
+
+.box:hover .itemOptions {
     display: flex;
     z-index: 9;
 }

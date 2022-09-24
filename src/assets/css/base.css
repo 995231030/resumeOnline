@@ -1,4 +1,4 @@
-@import '//at.alicdn.com/t/c/font_3207837_87fz8svc4ra.css';
+@import '//at.alicdn.com/t/c/font_3207837_h91rrf65lj.css';
 
 
 * {
@@ -54,4 +54,10 @@ div:focus {
     /* 去除移动端点击蓝块 */
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     -webkit-user-modify: read-write-plaintext-only;
+}
+
+@keyframes loading {
+    to {
+        transform: rotate(360deg);
+    }
 }
