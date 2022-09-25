@@ -2,6 +2,7 @@ import { createRouter, createWebHashHistory, createWebHistory } from "vue-router
 const mainPage = () => import("../components/mainPage.vue")
 const loginRegister = () => import("../components/loginRegister")
 const onePage = () => import("../components/onePage")
+const onlinePage = () => import("../components/onlinePage")
 
 const routes = [
 
@@ -20,6 +21,14 @@ const routes = [
         path: "/onePage",
         name: "onePage",
         component: onePage,
+        meta: {
+            keepAlive: true
+        }
+    },
+    {
+        path: "/onlinePage",
+        name: "onlinePage",
+        component: onlinePage,
         meta: {
             keepAlive: true
         }

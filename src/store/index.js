@@ -4,6 +4,22 @@ import { createStore } from 'vuex'
  */
 export default createStore({
     state: {
-        num: 111
+        widgetsKeysList: {
+            // baseInfo: {
+            //     name: "baseInfo",
+            //     dataKey: {
+            //         name: "name",
+            //         sex: "sex",
+            //         birthday: "birthday",
+            //         nativePlace: "nativePlace",
+            //         handsOnBackground: "handsOnBackground",
+            //         phone: "phone",
+            //         avatar: "avatar"
+            //     }
+            // }
+        }
+        ,
+    },
+    modules: {
     }
 })

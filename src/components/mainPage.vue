@@ -24,7 +24,7 @@
     <swiper-slide class="slideBox">
       <div class="resume_online">
         <div id="lottie_2">
-          <div class="btn">现在开始</div>
+          <div class="btn" @click="toOnlinePage">现在开始</div>
         </div>
         <div class="text">
           制作在线简历
@@ -100,6 +100,11 @@ export default {
         name: 'onePage'
       })
     })
+    const toOnlinePage = (() => {
+      router.push({
+        name: 'onlinePage'
+      })
+    })
     const onSwiper = (swiper) => {
       console.log(swiper);
     };
@@ -112,6 +117,7 @@ export default {
       onSwiper,
       onSlideChange,
       toOnePage,
+      toOnlinePage,
       modules: [Mousewheel]
     }
   },
