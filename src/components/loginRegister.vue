@@ -11,13 +11,14 @@
                 <div style="display: inline-flex;align-items: center;justify-content: center;"><input type="checkbox"
                         name="" id="" :checked="isRememberPassword"><span style="cursor: pointer;user-select: none;"
                         @click="rememberPassword">记住密码</span></div>
-                <div><span class="btn loginNow">登录</span></div>
+                <div><span class="btn loginNow" @click="test">登录</span></div>
             </div>
         </div>
     </div>
 </template>
 
 <script>
+import axios from 'axios';
 export default {
     data() {
         return {
@@ -33,6 +34,15 @@ export default {
         this.stars()
     },
     methods: {
+        test() {
+            console.log("ok")
+
+            axios.post("/api/handle", {
+                topic: "ok"
+            }).then((res) => {
+                console.log(res)
+            })
+        },
         rememberPassword() {
             this.isRememberPassword = !this.isRememberPassword
         },
@@ -216,7 +226,8 @@ export default {
         border-radius: 5px;
         color: #0051ff;
     }
-    .loginNow:hover{
+
+    .loginNow:hover {
         color: #fff;
     }
 }
