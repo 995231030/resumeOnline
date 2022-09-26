@@ -1,6 +1,6 @@
 <template>
     <div>
-        <baseInfoVue :baseInfo="jsonData.baseInfo"></baseInfoVue>
+        <baseInfoVue></baseInfoVue>
     </div>
 </template>
 
@@ -15,12 +15,11 @@ export default {
 
         };
     },
-    props: ["jsonData"],
     created() {
 
     },
     mounted() {
-        console.log("mainWidgets")
+        console.log("mainWidgets,浮窗")
     },
     methods: {
 
