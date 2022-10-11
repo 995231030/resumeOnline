@@ -36,9 +36,8 @@ export default {
     methods: {
         test() {
             console.log("ok")
-
-            axios.post("/api/handle", {
-                topic: "ok"
+            axios.post("/api/distributor", {
+                topic: "userLogin"
             }).then((res) => {
                 console.log(res)
             })
