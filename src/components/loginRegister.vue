@@ -6,12 +6,24 @@
                 登录
             </div>
             <div class="infoBox">
-                <div><input type="text" name="" id="" placeholder="账号(邮箱)"> </div>
-                <div><input type="text" name="" id="" placeholder="密码"> <span></span></div>
-                <div style="display: inline-flex;align-items: center;justify-content: center;"><input type="checkbox"
-                        name="" id="" :checked="isRememberPassword"><span style="cursor: pointer;user-select: none;"
-                        @click="rememberPassword">记住密码</span></div>
-                <div><span class="btn loginNow" @click="test">登录</span></div>
+                <div>
+                    <input type="text" name="" id="" placeholder="邮箱 ( Bicix通行证 )">
+                </div>
+                <div>
+                    <input type="password" name="" id="" placeholder="密码">
+                </div>
+                <div>
+                    <input type="text" name="" id="" v-if="isShowVcode" placeholder="验证码">
+                </div>
+                <div style="display: inline-flex;align-items: center;justify-content: center;">
+                    <input type="checkbox" name="" id="" :checked="isRememberPassword">
+                    <span style="cursor: pointer;user-select: none;" @click="rememberPassword">记住密码</span>
+                </div>
+                <div>
+                    <span class="btn loginNow" @click="test">登录 /
+                        <span style="font-size: 12px;color: #316ae6;">注册</span>
+                    </span>
+                </div>
             </div>
         </div>
     </div>
@@ -25,7 +37,8 @@ export default {
             isRememberPassword: false,
             colorList: ["#7EC1C0", "#e4d3a8", "#e28147", "#c64d4d", "#90dcce", "#a3d6ad", "#cd4c38", "#0cc8eb", "#e151b7"],
             canvas: null,
-            ctx: null
+            ctx: null,
+            isShowVcode: false
         };
     },
     created() {
@@ -73,35 +86,35 @@ export default {
             // var alpha = 0;
             //----------------------------
             //监听陀螺仪
-            // if (window.DeviceOrientationEvent) {
-            //     window.addEventListener('deviceorientation', (e) => {
-            //         // alpha = e.alpha;
-            //         beta = e.beta;
-            //         gamma = e.gamma;
-            //     });
-            // }
+            if (window.DeviceOrientationEvent) {
+                window.addEventListener('deviceorientation', (e) => {
+                    // alpha = e.alpha;
+                    beta = e.beta;
+                    gamma = e.gamma;
+                });
+            }
             //----------------
-            //监听鼠标位置
-            // function mousePosition(ev) {
-            //     if (ev.pageX || ev.pageY) {
-            //         return {
-            //             x: ev.pageX,
-            //             y: ev.pageY
-            //         };
-            //     }
-            //     return {
-            //         x: ev.clientX + document.body.scrollLeft - document.body.clientLeft,
-            //         y: ev.clientY + document.body.scrollTop - document.body.clientTop
-            //     };
-            // }
+            // 监听鼠标位置
+            function mousePosition(ev) {
+                if (ev.pageX || ev.pageY) {
+                    return {
+                        x: ev.pageX,
+                        y: ev.pageY
+                    };
+                }
+                return {
+                    x: ev.clientX + document.body.scrollLeft - document.body.clientLeft,
+                    y: ev.clientY + document.body.scrollTop - document.body.clientTop
+                };
+            }
 
-            // function mouseMove(e) {
-            //     e = e || window.event;
-            //     var mousePos = mousePosition(e);
-            //     mousex = mousePos.x;
-            //     mousey = mousePos.y;
-            // }
-            // document.onmousemove = mouseMove;
+            function mouseMove(e) {
+                e = e || window.event;
+                var mousePos = mousePosition(e);
+                mousex = mousePos.x;
+                mousey = mousePos.y;
+            }
+            document.onmousemove = mouseMove;
             var startLines = /** @class */ (function () {
                 function startLines() {
                     this.positionx = -200;
@@ -223,11 +236,19 @@ export default {
         text-align: center;
         padding: 10px 20px;
         border-radius: 5px;
-        color: #0051ff;
+        background: #c7d8ff;
+        font-size: 16px;
+        color: #316ae6;
+        border: none;
     }
 
     .loginNow:hover {
+        background: #4c7eeb;
         color: #fff;
+
+        span {
+            color: #fff !important;
+        }
     }
 }
 </style>
