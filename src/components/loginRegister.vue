@@ -7,13 +7,21 @@
             </div>
             <div class="infoBox">
                 <div>
-                    <input type="text" name="" id="" placeholder="邮箱 ( Bicix通行证 )">
+                    <input type="text" name="" id="" placeholder="邮箱 ( Bicix通行证 )" :value="account"
+                        @blur="checkValue(0,account)" @input="checkValue(0,account)"
+                        :style="isNullAccount?'border: 1px solid red':''">
                 </div>
                 <div>
-                    <input type="password" name="" id="" placeholder="密码">
+                    <input type="password" name="" id="" placeholder="密码" :value="password"
+                        @blur="checkValue(1,password)" @input="checkValue(1,password)"
+                        :style="isNullPassword?'border: 1px solid red':''">
                 </div>
                 <div>
                     <input type="text" name="" id="" v-if="isShowVcode" placeholder="验证码">
+                    <div v-if="isShowVcode" style="display: flex;justify-content: flex-end;cursor: pointer;"
+                        @click="reSentVcode">
+                        {{countDown}}
+                    </div>
                 </div>
                 <div style="display: inline-flex;align-items: center;justify-content: center;">
                     <input type="checkbox" name="" id="" :checked="isRememberPassword">
@@ -38,7 +46,12 @@ export default {
             colorList: ["#7EC1C0", "#e4d3a8", "#e28147", "#c64d4d", "#90dcce", "#a3d6ad", "#cd4c38", "#0cc8eb", "#e151b7"],
             canvas: null,
             ctx: null,
-            isShowVcode: false
+            isShowVcode: false,
+            countDown: 60,
+            account: "",
+            password: "",
+            isNullAccount: false,
+            isNullPassword: false
         };
     },
     created() {
@@ -47,8 +60,33 @@ export default {
         this.stars()
     },
     methods: {
+        checkValue(code, value) {
+            if (code && value == "") {
+                this.isNullPassword = true
+            } else this.isNullPassword = false
+            if (!code && value == "") {
+                this.isNullAccount = true
+            } else this.isNullAccount = false
+        },
+        reSentVcode() {
+            if (this.countDown == "重新获取") {
+                this.turnToReg()
+            }
+        },
+        turnToReg() {
+            this.isShowVcode = true
+            this.countDown = 60
+            let countDown = setInterval(() => {
+                this.countDown--
+                if (this.countDown == 0) {
+                    this.countDown = "重新获取"
+                    clearInterval(countDown)
+                }
+            }, 1000)
+        },
         test() {
-            console.log("ok")
+            // this.turnToReg()
+            return
             axios.post("/api/distributor", {
                 topic: "userLogin"
             }).then((res) => {
@@ -202,6 +240,10 @@ export default {
 </script>
 
 <style scoped lang="less">
+.null {
+    border: 1px solid red !important;
+}
+
 .background {
     background: rgb(12, 12, 12);
     width: 100vw;
