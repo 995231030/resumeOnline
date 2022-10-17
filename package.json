@@ -22,6 +22,7 @@
     "less-loader": "^11.0.0",
     "lottie-web": "^5.9.6",
     "paste-image": "^0.0.3",
+    "showtips": "^1.0.0",
     "swiper": "^8.3.2",
     "vue": "^3.2.13",
     "vue-quill-editor": "^3.0.6",

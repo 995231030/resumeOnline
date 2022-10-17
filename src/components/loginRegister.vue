@@ -7,14 +7,12 @@
             </div>
             <div class="infoBox">
                 <div>
-                    <input type="text" name="" id="" placeholder="邮箱 ( Bicix通行证 )" :value="account"
-                        @blur="checkValue(0,account)" @input="checkValue(0,account)"
-                        :style="isNullAccount?'border: 1px solid red':''">
+                    <input type="text" name="" id="" placeholder="邮箱 ( Bicix通行证 )" v-model="account"
+                        @blur="checkValue(0)" @input="checkValue(0)" :class="isNullAccount?'null':''">
                 </div>
                 <div>
-                    <input type="password" name="" id="" placeholder="密码" :value="password"
-                        @blur="checkValue(1,password)" @input="checkValue(1,password)"
-                        :style="isNullPassword?'border: 1px solid red':''">
+                    <input type="password" name="" id="" placeholder="密码" v-model="password" @blur="checkValue(1)"
+                        @input="checkValue(1)" :class="isNullPassword?'null':''">
                 </div>
                 <div>
                     <input type="text" name="" id="" v-if="isShowVcode" placeholder="验证码">
@@ -28,7 +26,7 @@
                     <span style="cursor: pointer;user-select: none;" @click="rememberPassword">记住密码</span>
                 </div>
                 <div>
-                    <span class="btn loginNow" @click="test">登录 /
+                    <span class="btn loginNow" @click="login">登录 /
                         <span style="font-size: 12px;color: #316ae6;">注册</span>
                     </span>
                 </div>
@@ -39,6 +37,7 @@
 
 <script>
 import axios from 'axios';
+import toast from 'showtips'
 export default {
     data() {
         return {
@@ -60,13 +59,19 @@ export default {
         this.stars()
     },
     methods: {
-        checkValue(code, value) {
-            if (code && value == "") {
+        checkValue(code) {
+            if (code && this.password == "") {
                 this.isNullPassword = true
-            } else this.isNullPassword = false
-            if (!code && value == "") {
+            } else {
+                console.log(this.password)
+                this.isNullPassword = false
+            }
+            if (!code && this.account == "") {
                 this.isNullAccount = true
-            } else this.isNullAccount = false
+            } else {
+                this.isNullAccount = false
+            }
+            // console.log(this.password)
         },
         reSentVcode() {
             if (this.countDown == "重新获取") {
@@ -84,8 +89,11 @@ export default {
                 }
             }, 1000)
         },
-        test() {
+        login() {
             // this.turnToReg()
+            if (this.password == "" || this.account == "") {
+                toast.showToast(5, "请输入完整信息")
+            }
             return
             axios.post("/api/distributor", {
                 topic: "userLogin"
