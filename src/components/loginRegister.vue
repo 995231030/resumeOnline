@@ -63,7 +63,6 @@ export default {
             if (code && this.password == "") {
                 this.isNullPassword = true
             } else {
-                console.log(this.password)
                 this.isNullPassword = false
             }
             if (!code && this.account == "") {
@@ -71,7 +70,6 @@ export default {
             } else {
                 this.isNullAccount = false
             }
-            // console.log(this.password)
         },
         reSentVcode() {
             if (this.countDown == "重新获取") {
@@ -92,13 +90,19 @@ export default {
         login() {
             // this.turnToReg()
             if (this.password == "" || this.account == "") {
-                toast.showToast(5, "请输入完整信息")
+                toast.showToast(3, "请输入完整信息")
+                return
             }
-            return
             axios.post("/api/distributor", {
-                topic: "userLogin"
+                topic: "userLogin",
+                data: {
+                    account: this.account,
+                    password: this.password
+                }
             }).then((res) => {
                 console.log(res)
+            }).catch(() => {
+                toast.showToast(2, "网络错误")
             })
         },
         rememberPassword() {
