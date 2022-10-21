@@ -102,7 +102,7 @@ export default {
             }).then((res) => {
                 console.log(res)
             }).catch(() => {
-                toast.showToast(2, "网络或服务器错误")
+                toast.showToast(2, "网络错误")
             })
         },
         rememberPassword() {
