@@ -8,17 +8,17 @@
             <div class="infoBox">
                 <div>
                     <input type="text" name="" id="" placeholder="邮箱 ( Bicix通行证 )" v-model="account"
-                        @blur="checkValue(0)" @input="checkValue(0)" :class="isNullAccount?'null':''">
+                        @blur="checkValue(0)" @input="checkValue(0)" :class="isNullAccount ? 'null' : ''">
                 </div>
                 <div>
                     <input type="password" name="" id="" placeholder="密码" v-model="password" @blur="checkValue(1)"
-                        @input="checkValue(1)" :class="isNullPassword?'null':''">
+                        @input="checkValue(1)" :class="isNullPassword ? 'null' : ''">
                 </div>
                 <div>
                     <input type="text" name="" id="" v-if="isShowVcode" placeholder="验证码">
                     <div v-if="isShowVcode" style="display: flex;justify-content: flex-end;cursor: pointer;"
                         @click="reSentVcode">
-                        {{countDown}}
+                        {{ countDown }}
                     </div>
                 </div>
                 <div style="display: inline-flex;align-items: center;justify-content: center;">
@@ -88,13 +88,14 @@ export default {
             }, 1000)
         },
         login() {
+            // TODO 2022-10-24 13:58  朱永博
             // this.turnToReg()
-            if (this.password == "" || this.account == "") {
-                toast.showToast(3, "请输入完整信息")
-                return
-            }
+            // if (this.password == "" || this.account == "") {
+            //     toast.showToast(3, "请输入完整信息")
+            //     return
+            // }
             axios.post("/api/distributor", {
-                topic: "userLogin",
+                topic: "userReg",
                 data: {
                     account: this.account,
                     password: this.password
