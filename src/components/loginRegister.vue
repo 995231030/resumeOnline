@@ -38,6 +38,7 @@
 <script>
 import axios from 'axios';
 import toast from 'showtips'
+import send from '@/utils/axiosApi';
 export default {
     data() {
         return {
@@ -90,21 +91,32 @@ export default {
         login() {
             // TODO 2022-10-24 13:58  朱永博
             // this.turnToReg()
-            // if (this.password == "" || this.account == "") {
-            //     toast.showToast(3, "请输入完整信息")
-            //     return
+            if (this.password == "" || this.account == "") {
+                toast.showToast(3, "请输入完整信息")
+                return
+            }
+            // console.log(send.getUuid(24, 16))
+            // {
+            //     account: this.account,
+            //     password: this.password
             // }
-            axios.post("/api/distributor", {
-                topic: "userReg",
-                data: {
-                    account: this.account,
-                    password: this.password
-                }
+            send.post("userReg", {
+                account: this.account,
+                password: this.password
             }).then((res) => {
                 console.log(res)
-            }).catch(() => {
-                toast.showToast(2, "网络错误")
             })
+            // axios.post("/api/distributor", {
+            //     topic: "userReg",
+            //     data: {
+            //         account: this.account,
+            //         password: this.password
+            //     }
+            // }).then((res) => {
+            //     console.log(res)
+            // }).catch(() => {
+            //     toast.showToast(2, "网络错误")
+            // })
         },
         rememberPassword() {
             this.isRememberPassword = !this.isRememberPassword
@@ -146,26 +158,26 @@ export default {
             }
             //----------------
             // 监听鼠标位置
-            function mousePosition(ev) {
-                if (ev.pageX || ev.pageY) {
-                    return {
-                        x: ev.pageX,
-                        y: ev.pageY
-                    };
-                }
-                return {
-                    x: ev.clientX + document.body.scrollLeft - document.body.clientLeft,
-                    y: ev.clientY + document.body.scrollTop - document.body.clientTop
-                };
-            }
+            // function mousePosition(ev) {
+            //     if (ev.pageX || ev.pageY) {
+            //         return {
+            //             x: ev.pageX,
+            //             y: ev.pageY
+            //         };
+            //     }
+            //     return {
+            //         x: ev.clientX + document.body.scrollLeft - document.body.clientLeft,
+            //         y: ev.clientY + document.body.scrollTop - document.body.clientTop
+            //     };
+            // }
 
-            function mouseMove(e) {
-                e = e || window.event;
-                var mousePos = mousePosition(e);
-                mousex = mousePos.x;
-                mousey = mousePos.y;
-            }
-            document.onmousemove = mouseMove;
+            // function mouseMove(e) {
+            //     e = e || window.event;
+            //     var mousePos = mousePosition(e);
+            //     mousex = mousePos.x;
+            //     mousey = mousePos.y;
+            // }
+            // document.onmousemove = mouseMove;
             var startLines = /** @class */ (function () {
                 function startLines() {
                     this.positionx = -200;
