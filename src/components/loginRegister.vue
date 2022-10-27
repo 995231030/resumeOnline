@@ -36,7 +36,6 @@
 </template>
 
 <script>
-import axios from 'axios';
 import toast from 'showtips'
 import send from '@/utils/axiosApi';
 export default {
@@ -106,17 +105,6 @@ export default {
             }).then((res) => {
                 console.log(res)
             })
-            // axios.post("/api/distributor", {
-            //     topic: "userReg",
-            //     data: {
-            //         account: this.account,
-            //         password: this.password
-            //     }
-            // }).then((res) => {
-            //     console.log(res)
-            // }).catch(() => {
-            //     toast.showToast(2, "网络错误")
-            // })
         },
         rememberPassword() {
             this.isRememberPassword = !this.isRememberPassword
